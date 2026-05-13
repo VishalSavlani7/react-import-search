@@ -67,8 +67,8 @@
 //   }
 // }
 const { Cashfree } = require("cashfree-pg");
-const admin = require("../../../lib/firebase-admin").default;
-const { supabase } = require("../../../lib/supabase");
+import admin from "../../../lib/firebase-admin";
+import { supabase } from "../../../lib/supabase";
 
 export default async function handler(req, res) {
   if (req.method !== "POST")
