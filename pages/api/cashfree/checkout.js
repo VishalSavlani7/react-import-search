@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-version": "2023-08-01",
+        "x-api-version": "2025-01-01",
         "x-client-id": cashfreeConfig.appId,
         "x-client-secret": cashfreeConfig.secretKey,
       },
