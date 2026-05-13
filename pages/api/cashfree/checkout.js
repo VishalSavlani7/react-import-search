@@ -85,7 +85,7 @@ export default async function handler(req, res) {
     // Initialize Cashfree
     Cashfree.XClientId = process.env.CASHFREE_APP_ID;
     Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY;
-    Cashfree.XEnvironment = "SANDBOX";
+    Cashfree.XEnvironment = Cashfree.Environment.SANDBOX;
 
     // Upsert user in Supabase
     const { error: upsertError } = await supabase
