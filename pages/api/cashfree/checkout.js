@@ -66,9 +66,9 @@
 //     return res.status(500).json({ error: err.message });
 //   }
 // }
-import admin from "../../../lib/firebase-admin";
-import { supabase } from "../../../lib/supabase";
-import { Cashfree } from "cashfree-pg";
+const { Cashfree } = require("cashfree-pg");
+const admin = require("../../../lib/firebase-admin").default;
+const { supabase } = require("../../../lib/supabase");
 
 export default async function handler(req, res) {
   if (req.method !== "POST")
@@ -79,10 +79,10 @@ export default async function handler(req, res) {
   try {
     const { uid, email } = await admin.auth().verifyIdToken(token);
 
-    // Initialize Cashfree inside handler
+    // Initialize Cashfree
     Cashfree.XClientId = process.env.CASHFREE_APP_ID;
     Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY;
-    Cashfree.XEnvironment = "SANDBOX"; // ← hardcode for now
+    Cashfree.XEnvironment = "SANDBOX";
 
     // Upsert user in Supabase
     await supabase.from("users").upsert({ uid, email }, { onConflict: "uid" });
@@ -105,12 +105,16 @@ export default async function handler(req, res) {
 
     const response = await Cashfree.PGCreateOrder("2025-01-01", orderRequest);
 
+    console.log("Cashfree response:", response.data);
+
     return res.status(200).json({
       orderId: response.data.order_id,
       paymentSessionId: response.data.payment_session_id,
     });
   } catch (err) {
     console.error("Checkout error:", err?.response?.data || err.message);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({
+      error: err?.response?.data || err.message,
+    });
   }
 }
