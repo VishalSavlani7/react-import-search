@@ -70,14 +70,6 @@ import admin from "../../../lib/firebase-admin";
 import { supabase } from "../../../lib/supabase";
 import { Cashfree } from "cashfree-pg";
 
-// Initialize Cashfree
-Cashfree.XClientId = process.env.CASHFREE_APP_ID;
-Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY;
-Cashfree.XEnvironment =
-  process.env.CASHFREE_ENV === "PROD"
-    ? Cashfree.Environment.PRODUCTION
-    : Cashfree.Environment.SANDBOX;
-
 export default async function handler(req, res) {
   if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
@@ -87,12 +79,16 @@ export default async function handler(req, res) {
   try {
     const { uid, email } = await admin.auth().verifyIdToken(token);
 
+    // Initialize Cashfree inside handler
+    Cashfree.XClientId = process.env.CASHFREE_APP_ID;
+    Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY;
+    Cashfree.XEnvironment = "SANDBOX"; // ← hardcode for now
+
     // Upsert user in Supabase
     await supabase.from("users").upsert({ uid, email }, { onConflict: "uid" });
 
-    // Create Cashfree order using SDK
     const orderRequest = {
-      order_amount: 499,
+      order_amount: 999,
       order_currency: "INR",
       order_id: `ORDER_${uid}_${Date.now()}`,
       customer_details: {
