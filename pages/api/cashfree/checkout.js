@@ -66,7 +66,9 @@
 //     return res.status(500).json({ error: err.message });
 //   }
 // }
-const { Cashfree } = require("cashfree-pg");
+
+// const { Cashfree } = require("cashfree-pg");
+import { Cashfree } from "cashfree-pg";
 
 import admin from "../../../lib/firebase-admin";
 import { supabase } from "../../../lib/supabase";
